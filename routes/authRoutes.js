@@ -13,6 +13,12 @@ module.exports = app => {
 	// at authenticated
 	app.get('/auth/google/callback', passport.authenticate('google'))
 
+	// Allows user to logout
+	app.get('/api/logout', (req, res) => {
+		req.logout()
+		res.send(req.user)
+	})
+
 	// Gets the current user
 	app.get('/api/current_user', (req, res) => {
 		res.send(req.user)
