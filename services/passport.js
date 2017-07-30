@@ -16,7 +16,14 @@ passport.use(
 		},
 		// This is what is called when the callback is authenticated
 		(accessToken, refreshToken, profile, done) => {
-			new User({ googleID: profile.id }).save()
+			User.findOne({ googleID: profile.id }).then(existingUser => {
+				if (existingUser) {
+					// We already have a record of the user
+				} else {
+					// We don't have a record and need to creat one
+					new User({ googleID: profile.id }).save()
+				}
+			})
 		}
 	)
 )
