@@ -5,6 +5,18 @@ const keys = require('../config/keys')
 
 const User = mongoose.model('users')
 
+// Turns user into Mongo ID
+passport.serializeUser((user, done) => {
+	done(null, user.id)
+})
+
+// Pull Mongo ID into user
+passport.deserializeUser((id, done) => {
+	User.findById(id).then(user => {
+		done(null, user)
+	})
+})
+
 // Assign which strategy Passport will use for auth with configs
 passport.use(
 	new GoogleStrategy(
