@@ -13,6 +13,7 @@ module.exports = app => {
 	// at authenticated
 	app.get('/auth/google/callback', passport.authenticate('google'))
 
+	// Gets the current user
 	app.get('/api/current_user', (req, res) => {
 		res.send(req.user)
 	})
