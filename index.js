@@ -5,19 +5,25 @@ const keys = require('./config/keys')
 
 const app = express()
 
+// Assign which strategy Passport will use for auth with configs
 passport.use(
 	new GoogleStrategy(
+		// These are the parameters required for OAuth
 		{
 			clientID: keys.googleClientID,
 			clientSecret: keys.googleClientSecret,
 			callbackURL: '/auth/google/callback'
 		},
-		accessToken => {
-			console.log(accessToken)
+		// This is what is called when the callback is authenticated
+		(accessToken, refreshToken, profile, done) => {
+			console.log('Access token', accessToken)
+			console.log('Refresh token', refreshToken)
+			console.log('profile', profile)
 		}
 	)
 )
 
+// The initial request to authenticates
 app.get(
 	'/auth/google',
 	passport.authenticate('google', {
@@ -25,5 +31,10 @@ app.get(
 	})
 )
 
+// This is the redirect-uri where Google returns to when it is successful
+// at authenticated
+app.get('/auth/google/callback', passport.authenticate('google'))
+
+// Configure the port that Express will be listening for
 const PORT = process.env.PORT || 5000
 app.listen(PORT)
