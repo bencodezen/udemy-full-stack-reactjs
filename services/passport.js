@@ -28,18 +28,17 @@ passport.use(
 			proxy: true
 		},
 		// This is what is called when the callback is authenticated
-		(accessToken, refreshToken, profile, done) => {
-			User.findOne({ googleID: profile.id }).then(existingUser => {
-				if (existingUser) {
-					// We already have a record of the user
-					done(null, existingUser)
-				} else {
-					// We don't have a record and need to creat one
-					new User({ googleID: profile.id })
-						.save()
-						.then(user => done(null, user))
-				}
-			})
+		async (accessToken, refreshToken, profile, done) => {
+			const existingUser = await User.findOne({ googleID: profile.id })
+
+			if (existingUser) {
+				// We already have a record of the user
+				return done(null, existingUser)
+			}
+
+			// We don't have a record and need to creat one
+			const user = await new User({ googleID: profile.id }).save()
+			done(null, user)
 		}
 	)
 )
